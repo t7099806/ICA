@@ -18,6 +18,19 @@ namespace ThAmCo.Events.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> EventGuestBookings(int? id)
+        {
+            var eventGuests = await _context.Guests
+                .Where(t => t.EventId == id)
+                .Include(t => t.Customer)
+                .Include(t => t.Event)
+                .ToListAsync();
+
+            ViewData["EventId"] = id;
+
+            return View("Index", eventGuests);
+        }
+
         // GET: GuestBookings
         public async Task<IActionResult> Index()
         {
@@ -46,10 +59,10 @@ namespace ThAmCo.Events.Controllers
         }
 
         // GET: GuestBookings/Create
-        public IActionResult Create()
+        public IActionResult Create(int? eventId)
         {
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email");
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", eventId);
             return View();
         }
 

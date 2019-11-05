@@ -18,6 +18,9 @@ namespace ThAmCo.Events.Controllers
             _context = context;
         }
 
+
+      
+
         // GET: Events
         public async Task<IActionResult> Index()
         {
