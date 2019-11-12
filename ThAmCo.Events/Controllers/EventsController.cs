@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThAmCo.Events.Data;
+using ThAmCo.Events.Models;
 
 namespace ThAmCo.Events.Controllers
 {
@@ -80,7 +81,9 @@ namespace ThAmCo.Events.Controllers
             {
                 return NotFound();
             }
-            return View(@event);
+
+            var edit = new EventsEditViewModel() { Id = @event.Id, Title = @event.Title, Duration = @event.Duration };
+            return View(edit);
         }
 
         // POST: Events/Edit/5
@@ -88,18 +91,27 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Date,Duration,TypeId")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Duration")] EventsEditViewModel @event)
         {
+            var @eventVM = await _context.Events.FindAsync(id);
+            if (@eventVM == null)
+            {
+                return NotFound();
+            }
+
             if (id != @event.Id)
             {
                 return NotFound();
             }
 
+            @eventVM.Duration = @event.Duration;
+            @eventVM.Title = @event.Title;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(@event);
+                    _context.Update(@eventVM);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -115,7 +127,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(@event);
+            return View(@eventVM);
         }
 
         // GET: Events/Delete/5

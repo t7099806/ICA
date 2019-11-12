@@ -8,7 +8,7 @@ using ThAmCo.Events.Data;
 
 namespace ThAmCo.Events.Models
 {
-    public class EventsViewModel
+    public class EventsEditViewModel
     {
        
 
