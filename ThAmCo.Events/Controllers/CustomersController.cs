@@ -47,7 +47,8 @@ namespace ThAmCo.Events.Controllers
                                                                 EventId = e.Event.Id,
                                                                 Date = e.Event.Date,
                                                                 Title = e.Event.Title,
-                                                                TypeID = e.Event.TypeId
+                                                                TypeID = e.Event.TypeId,
+                                                                Attended = e.Attended,
                                                             })
                                         }).FirstOrDefaultAsync(m => m.CustomerID == id);
                                         

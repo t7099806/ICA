@@ -18,5 +18,7 @@ namespace ThAmCo.Events.Models
 
         [Required]
         public string TypeID { get; set; }
+
+        public Boolean Attended { get; set; }
     }
 }
