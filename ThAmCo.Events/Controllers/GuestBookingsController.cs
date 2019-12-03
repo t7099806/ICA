@@ -158,7 +158,6 @@ namespace ThAmCo.Events.Controllers
         public async Task<IActionResult> Delete(int? custID, int? eventID)
         {
 
-
             if (custID == null || eventID == null)
             {
                 return BadRequest();
