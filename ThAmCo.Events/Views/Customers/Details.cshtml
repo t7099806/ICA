@@ -1,20 +1,20 @@
-﻿@model ThAmCo.Events.Data.Customer
+﻿@model ThAmCo.Events.Models.CustomerDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2> Details</h2>
 
 <div>
     <h4>Customer</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Surname)
+            @Html.DisplayNameFor(model => model.SurName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Surname)
+            @Html.DisplayFor(model => model.SurName)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
@@ -30,7 +30,51 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="col-md-4">
+    @if (Model.Events.Any())
+    {
+        <h4>Events</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CustomerID)
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        TypeID
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Events)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(Model => item.EventId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(Model => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(Model => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.TypeID)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p><br />No events booked</p>
+    }
 </div>
+

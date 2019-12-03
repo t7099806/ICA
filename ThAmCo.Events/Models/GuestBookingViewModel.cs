@@ -19,5 +19,8 @@ namespace ThAmCo.Events.Models
 
         public bool Attended { get; set; }
 
+
+        public int? guestCount { get; set; }
+
     }
 }
