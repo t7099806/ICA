@@ -11,6 +11,7 @@ namespace ThAmCo.Events.Models
     {
         public int CustomerId { get; set; }
 
+
         public Customer Customer { get; set; }
 
         public int EventId { get; set; }
@@ -20,7 +21,7 @@ namespace ThAmCo.Events.Models
         public bool Attended { get; set; }
 
 
-        public int? guestCount { get; set; }
+        
 
     }
 }

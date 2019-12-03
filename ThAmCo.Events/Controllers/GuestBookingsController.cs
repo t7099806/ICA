@@ -155,34 +155,44 @@ namespace ThAmCo.Events.Controllers
         }
 
         // GET: GuestBookings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? custID, int? eventID)
         {
-            if (id == null)
+
+
+            if (custID == null || eventID == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var guestBooking = await _context.Guests
                 .Include(g => g.Customer)
                 .Include(g => g.Event)
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+                .FirstOrDefaultAsync(m => m.CustomerId == custID && m.EventId == eventID);
+
             if (guestBooking == null)
             {
                 return NotFound();
             }
 
+            var Event = _context.Events.Find(eventID);
+            if(Event == null)
+            {
+                return BadRequest();
+            }
+
+            ViewData["EventTitle"] = Event.Title;
             return View(guestBooking);
         }
 
         // POST: GuestBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int custID, int eventID)
         {
-            var guestBooking = await _context.Guests.FindAsync(id);
+            var guestBooking = await _context.Guests.FindAsync(custID, eventID);
             _context.Guests.Remove(guestBooking);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("ListGuests", "Events", new { id = eventID });
         }
 
         private bool GuestBookingExists(int id)

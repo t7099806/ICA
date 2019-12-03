@@ -8,6 +8,8 @@ namespace ThAmCo.Events.Data
     {
         public int CustomerId { get; set; }
 
+      //  public bool IsActive { get; set; }
+
         public Customer Customer { get; set; }
 
         public int EventId { get; set; }
@@ -15,5 +17,6 @@ namespace ThAmCo.Events.Data
         public Event Event { get; set; }
 
         public bool Attended { get; set; }
+        
     }
 }

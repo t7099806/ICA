@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using ThAmCo.Events.Data;
+using ThAmCo.Events.Models;
 
 namespace ThAmCo.Events.Data
 {
@@ -65,7 +67,7 @@ namespace ThAmCo.Events.Data
                     new GuestBooking { CustomerId = 2, EventId = 1, Attended = false },
                     new GuestBooking { CustomerId = 1, EventId = 2, Attended = false },
                     new GuestBooking { CustomerId = 3, EventId = 2, Attended = false }
-                );
+                ); 
             }
         }
     }
