@@ -35,20 +35,7 @@ namespace ThAmCo.Events.Controllers
         // GET: GuestBookings
         public async Task<IActionResult> Index()
         {
-          //  var model = _context.Guests.Include(p => p.Event);
 
-           // var guests = await model.Select(p => new GuestBookingViewModel
-                                  //  {
-                                  //      CustomerID = p.CustomerId,
-                                   //     Customer = p.Customer,
-                                   //     EventID = p.EventId,
-                                    //    Event = p.Event,
-                                   //     Attended = p.Attended,
-                                    //    GuestCount = _context.Events.Count(c => c.Id == c.Id)
-
-//}).ToListAsync();
-
-           // return View(guests);
             var eventsDbContext = _context.Guests.Include(g => g.Customer).Include(g => g.Event);
            return View(await eventsDbContext.ToListAsync());
         }
@@ -186,12 +173,15 @@ namespace ThAmCo.Events.Controllers
         // POST: GuestBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int custID, int eventID)
+        public async Task<IActionResult> DeleteConfirmed([Bind("CustomerId,EventId")] GuestBooking guestBooking)
         {
-            var guestBooking = await _context.Guests.FindAsync(custID, eventID);
-            _context.Guests.Remove(guestBooking);
+            var guestBookingDel = await _context.Guests
+                                            .Where(g => g.CustomerId == guestBooking.CustomerId)
+                                            .Where(g => g.EventId == guestBooking.EventId)
+                                            .FirstOrDefaultAsync();
+            _context.Guests.Remove(guestBookingDel);
             await _context.SaveChangesAsync();
-            return RedirectToAction("ListGuests", "Events", new { id = eventID });
+            return RedirectToAction(nameof(Index));
         }
 
         private bool GuestBookingExists(int id)

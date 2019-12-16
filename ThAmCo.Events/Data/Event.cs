@@ -6,6 +6,8 @@ namespace ThAmCo.Events.Data
 {
     public class Event
     {
+        internal bool isActive;
+
         public int Id { get; set; }
 
         [Required]
