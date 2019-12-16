@@ -2,6 +2,7 @@
 
 
 @{
+    int count = 0;
     ViewData["Title"] = "Index";
 }
 
@@ -10,7 +11,7 @@
 
 <h2>Guest Bookings</h2>
 
-<h3>Count goes here</h3>
+
 
 <p>
     <a asp-action="Create" asp-route-Customerid="@ViewData["EventID"]" > Create New</a>
@@ -32,6 +33,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+        count++;
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Customer.Email)
@@ -51,3 +53,9 @@
 }
     </tbody>
 </table>
+<div>
+    <h4>
+        Total guests: @count
+    </h4>
+</div>
+
