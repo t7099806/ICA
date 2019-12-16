@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThAmCo.Events.Data;
 using ThAmCo.Events.Models;
+
 
 namespace ThAmCo.Events.Controllers
 {
@@ -18,9 +21,6 @@ namespace ThAmCo.Events.Controllers
         {
             _context = context;
         }
-
-
-      
 
         // GET: Events
         public async Task<IActionResult> Index()
@@ -37,6 +37,8 @@ namespace ThAmCo.Events.Controllers
             }
 
             var @event = await _context.Events
+                .Include(g => g.Bookings)
+                .ThenInclude( c => c.Customer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
@@ -159,9 +161,98 @@ namespace ThAmCo.Events.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> AvailableVenue(int? eventId)
+        {
+            if(eventId == null)
+            {
+                return NotFound();
+            }
+
+            var thisEvent = await _context.Events.FindAsync(eventId);
+
+            String eventType = thisEvent.TypeId;
+            DateTime beginDate = thisEvent.Date;
+            DateTime endDate = thisEvent.Date.Add(thisEvent.Duration.Value);
+
+            var availableVenue = new List<AvailableVenueModel>().AsEnumerable();
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:22263/");
+
+            
+
+            HttpResponseMessage response = await client.GetAsync("api/Availability?eventType=" + eventType
+                + "&beginDate=" + beginDate.ToString("yyyy-MM-dd") +
+                "&endDate=" + endDate.ToString("yyyy-MM-dd"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                availableVenue = await response.Content.ReadAsAsync<IEnumerable<AvailableVenueModel>>();
+
+                if (availableVenue.Count() == 0)
+                {
+                    ViewBag.NullVenues = true;
+                    Debug.WriteLine("No venues available");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("bad response ");
+                return BadRequest();
+            }
+
+            ViewData["EventTitle"] = thisEvent.Title;
+            ViewData["EventId"] = thisEvent.Id;
+            ViewData["EventDate"] = thisEvent.Date;
+
+            return View(availableVenue);
+        }
+
+        public async Task<IActionResult> MakeReservation(int? eventId, DateTime EventDate, string VenueCode)
+        {
+            if(eventId == null || VenueCode == null)
+            {
+                return NotFound();
+            }
+
+            var thisEvent = await _context.Events.FindAsync(eventId);
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:22263/");
+
+            var reservation = new MakeReservationViewModel
+            {
+                EventDate = EventDate,
+                VenueCode = VenueCode
+            };
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/reservations/", reservation);
+
+            if(response.IsSuccessStatusCode)
+            {
+                if(!String.IsNullOrEmpty(thisEvent.VenueCode))
+                {
+                    var reference = thisEvent.VenueCode + EventDate.ToString("yyyy/MM/dd");
+                    await client.DeleteAsync("api/reservations/" + reference);
+
+
+                }
+
+                thisEvent.VenueCode = reservation.VenueCode;
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         private bool EventExists(int id)
         {
             return _context.Events.Any(e => e.Id == id);
         }
+
+       
+
     }
 }

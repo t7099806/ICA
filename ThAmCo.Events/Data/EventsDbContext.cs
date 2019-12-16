@@ -70,5 +70,7 @@ namespace ThAmCo.Events.Data
                 ); 
             }
         }
+
+        public DbSet<ThAmCo.Events.Models.AvailableVenueModel> AvailableVenueModels { get; set; }
     }
 }

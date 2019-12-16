@@ -6,7 +6,7 @@ namespace ThAmCo.Events.Data
 {
     public class Event
     {
-        internal bool isActive;
+       // public bool isActive { get; set; }
 
         public int Id { get; set; }
 
@@ -20,8 +20,13 @@ namespace ThAmCo.Events.Data
         [Required, MaxLength(3), MinLength(3)]
         public string TypeId { get; set; }
 
+        [MinLength(5), MaxLength(5)]
+        public string VenueCode { get; set; }
+
         public List<GuestBooking> Bookings { get; set; }
 
         
+
+
     }
 }
