@@ -20,5 +20,8 @@ namespace ThAmCo.Events.Models
         public string TypeID { get; set; }
 
         public Boolean Attended { get; set; }
+
+
+        
     }
 }

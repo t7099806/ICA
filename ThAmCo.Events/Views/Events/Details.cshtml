@@ -36,6 +36,53 @@
         </dd>
     </dl>
 </div>
+<div class= "col-md-4">
+    @if (Model.Bookings.Any())
+    {
+        <h4>
+            <table class="table">
+                <thead>
+                    
+                        <tr>
+                            <th>
+                                CustomerID
+                            </th>
+                            <th>
+                                First Name
+                            </th>
+                            <th>
+                                Surname
+                            </th>
+                            <th>
+                                Attended
+                            </th>
+                        </tr>   
+                    
+                    
+                </thead>
+                <tbody>
+                    @foreach(var item in Model.Bookings)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(Model => item.CustomerId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(Model => item.Customer.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(Model => item.Customer.Surname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(Model => item.Attended)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </h4>
+    }
+</div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
